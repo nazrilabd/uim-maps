@@ -1,0 +1,7 @@
+newmtl Material001
+Ka 0.0 1.0 0.0  # Ambient color (Hijau)
+Kd 0.0 1.0 0.0  # Diffuse color (Hijau)
+Ks 0.0 0.0 0.0  # Specular color (Tidak ada spekular)
+Ns 0.0          # Shininess (None)
+d 1.0            # Opacity (Penuh, tidak transparan)
+illum 2          # Illumination model (Pencahayaan standar)

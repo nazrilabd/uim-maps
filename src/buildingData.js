@@ -1,3 +1,4 @@
+import { texture } from "three/tsl";
 import { models } from "./ModelLoad.js";
 //building
 export async function buildingData() {
@@ -37,7 +38,7 @@ export async function buildingData() {
       name: "kelas c2",
       color: 0x808080,
       position: [-30, 0, 10],
-      model: model.buildingClass.clone,
+      model: model.buildingClass.clone(),
     },
     {
       name: "kelas c1",
@@ -48,9 +49,10 @@ export async function buildingData() {
     {
       name: "lapangan",
       color: 0x008000,
-      position: [-5, 0, 10],
-      size: [30, 5, 25],
+      position: [-5, 0, 12],
+      size: [25, 5, 23],
       model: model.buildingLapangan,
+      scale: 4,
     },
     {
       name: "kelas b1",
@@ -79,6 +81,7 @@ export async function buildingData() {
     {
       name: "ruang aula",
       color: 0x800080,
+      texture: "/assets/textures/building-aula.png",
       position: [10, 0, -10],
       size: [30, 5, 10],
       model: model.buildingAula.clone(),
@@ -127,14 +130,7 @@ export async function buildingData() {
     {
       name: "parkiran",
       color: 0xffa500,
-      position: [0, 0, -35],
-      size: [30, 5, 10],
-      model: model.buildingParkiran,
-    },
-    {
-      name: "parkiran",
-      color: 0xffa500,
-      position: [0, 0, -23],
+      position: [15, 0, -25],
       size: [30, 5, 10],
       model: model.buildingParkiran,
     },

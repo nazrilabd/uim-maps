@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/Addons.js";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
 import { buildingData } from "./buildingData";
+import { buildTraffic } from "./trafficBuilding";
 // Scene
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xbfd1e5);
@@ -53,31 +54,39 @@ const gridHelper = new THREE.GridHelper(
 // groundSize/5 artinya jarak antar garis, hitam warnanya
 gridHelper.position.y = 0.01; // biar ga nabrak plane hijau
 scene.add(gridHelper);
-
+const buildingMeshes = [];
 async function createBuilding() {
   const buildings = await buildingData();
 
   buildings.forEach(async (building) => {
     const size = building.size || [8, 5, 8]; // default 8x8 kotak kalau tidak ditentukan
     const geometry = new THREE.BoxGeometry(size[0], size[1], size[2]);
-    const material = new THREE.MeshLambertMaterial({ color: building.color });
-    let scale = building.scale ?? 0.2;
+
+    let scale = building.scale ?? 1;
 
     const mesh = building.model;
-    mesh.material = material;
-    // mesh.geometry = geometry;
-    mesh.position.set(building.position[0], 0, building.position[2]);
+    mesh.userData = {
+      name: building.name,
+      description: building.description || "No description available", // Optional description
+    };
+
+    mesh.position.x = building.position[0];
+    mesh.position.z = building.position[2];
     if (building.rotate) {
       let r = building.rotate;
       mesh.rotation.y = r;
     }
     mesh.scale.set(scale, scale, scale);
+    if (building.name == "ruang aula") {
+      mesh.position.y = 2;
+    }
+
     scene.add(mesh);
-    console.log(building.name);
-    console.log(building.model);
+    buildingMeshes.push(mesh);
   });
 }
 createBuilding();
+buildTraffic(scene);
 // ===== Responsive resize =====
 window.addEventListener("resize", () => {
   camera.aspect = window.innerWidth / window.innerHeight;
@@ -100,6 +109,37 @@ document.getElementById("zoomOut").addEventListener("click", () => {
 // ==================================================
 
 // Render loop
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+const popup = document.getElementById("popup");
+
+renderer.domElement.addEventListener("click", (event) => {
+  const buildingMeshe = buildingMeshes;
+
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+  raycaster.setFromCamera(mouse, camera);
+  const intersects = raycaster.intersectObjects(buildingMeshes, true);
+
+  if (intersects.length > 0) {
+    console.log(intersects[0].object.userData.name);
+    const intersected = intersects[0].object;
+
+    const { name, description } = intersected.userData;
+
+    popup.innerHTML = `
+      <div class="font-semibold mb-1">${name}</div>
+      <div>${description}</div>
+    `;
+    popup.style.left = `${event.clientX + 12}px`;
+    popup.style.top = `${event.clientY + 12}px`;
+    popup.classList.remove("hidden");
+  } else {
+    popup.classList.add("hidden");
+  }
+});
+
 function animate() {
   requestAnimationFrame(animate);
   renderer.render(scene, camera);

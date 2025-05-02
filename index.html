@@ -2,10 +2,11 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Three.js Map</title>
+    <title>uim maps</title>
     <style>
       body {
         margin: 0;
+        overflow: hidden;
       }
     </style>
   </head>
@@ -17,6 +18,10 @@
     <button id="zoomOut" style="position: absolute; top: 40px; left: 10px">
       Zoom Out
     </button>
+    <div
+      id="popup"
+      class="absolute z-50 hidden bg-white bg-opacity-90 text-gray-800 border border-gray-300 rounded-lg px-4 py-2 text-sm pointer-events-none shadow-lg max-w-xs"
+    ></div>
 
     <script type="importmap">
       {
